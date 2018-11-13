@@ -661,12 +661,16 @@ de:
 
   describe '#destroy' do
     before :each do
+      reset_elastic_search
+
       @project = FactoryBot.create(:project, repository_url: Rails.root.join('spec', 'fixtures', 'repository.git').to_s)
       @commit                        = @project.commit!('HEAD', skip_import: true)
       @request.env['devise.mapping'] = Devise.mappings[:user]
       @user = FactoryBot.create(:user, :confirmed, role: 'admin')
       sign_in @user
+
       regenerate_elastic_search_indexes
+      @commit.update_elasticsearch_index
     end
 
     it "should require a monitor" do

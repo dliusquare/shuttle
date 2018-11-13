@@ -90,10 +90,10 @@ RSpec.describe TranslationUpdateMediator do
         # create a translation that will be used for lookup for tm_match
         FactoryBot.create(:translation, copy: "test", source_copy: 'test', approved: true, translated: true, rfc5646_locale: 'fr')
 
+        TranslationUpdateMediator.new(@fr_translation, reviewer, @params).update!
+
         # finding the fuzzy match for a translation requires elasticsearch, update the index since we just created a translation
         regenerate_elastic_search_indexes
-
-        TranslationUpdateMediator.new(@fr_translation, reviewer, @params).update!
 
         # this is a 100% match with the translation created above
         expect(@fr_translation.tm_match).to eq 100.0
